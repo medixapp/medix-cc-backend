@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const {
-	addUserRegister,
-	getAllUsers,
+	register,
+	getAllUserRegister,
 	login,
 	getAllUserLogin,
 } = require('./handler');
 
-router.post('/register', addUserRegister);
-router.get('/register', getAllUsers);
+router.post('/register', register);
+router.get('/register', getAllUserRegister);
 
 router.post('/login', login);
 router.get('/login', getAllUserLogin);

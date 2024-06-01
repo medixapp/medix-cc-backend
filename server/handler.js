@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 // Register Area
-const addUserRegister = async (req, res) => {
+const register = async (req, res) => {
 	try {
 		const { username, email, password } = req.body;
 		const id = nanoid(16);
@@ -44,7 +44,8 @@ const addUserRegister = async (req, res) => {
 	}
 };
 
-const getAllUsers = (req, res) => {
+//Testing Area
+const getAllUserRegister = (req, res) => {
 	res.json({
 		status: 'success',
 		data: {
@@ -60,21 +61,28 @@ const login = async (req, res) => {
 		const user = users.find((user) => user.email === email);
 
 		if (!user) {
-			return res.status(400).json({ status: 'fail', message: 'User does not exist' });
+			return res
+				.status(400)
+				.json({ status: 'fail', message: 'User does not exist' });
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
-			return res.status(400).json({ status: 'fail', message: 'Invalid credentials' });
+			return res
+				.status(400)
+				.json({ status: 'fail', message: 'Invalid credentials' });
 		}
 
 		const { password: _, ...userWithoutPassword } = user;
 		res.status(200).json({ status: 'success', user: userWithoutPassword });
 	} catch (err) {
-		res.status(500).json({ status: 'fail', message: 'Server error', error: err.message });
+		res
+			.status(500)
+			.json({ status: 'fail', message: 'Server error', error: err.message });
 	}
 };
 
+//Testing Area
 const getAllUserLogin = (req, res) => {
 	res.json({
 		status: 'success',
@@ -84,4 +92,4 @@ const getAllUserLogin = (req, res) => {
 	});
 };
 
-module.exports = { addUserRegister, getAllUsers, login, getAllUserLogin };
+module.exports = { register, getAllUserRegister, login, getAllUserLogin };
