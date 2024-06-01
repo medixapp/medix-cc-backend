@@ -57,17 +57,21 @@ const getAllUsers = (req, res) => {
 const login = async (req, res) => {
 	try {
 		const { email, password } = req.body;
-		const user = await users.findOne({ email: email });
+		const user = users.find((user) => user.email === email);
 
-		if (!user) return res.status(400).json({ msg: 'User does not exist' });
+		if (!user) {
+			return res.status(400).json({ status: 'fail', message: 'User does not exist' });
+		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
-		if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials. ' });
+		if (!isMatch) {
+			return res.status(400).json({ status: 'fail', message: 'Invalid credentials' });
+		}
 
-		delete user.password;
-		res.status(200).json({ user });
+		const { password: _, ...userWithoutPassword } = user;
+		res.status(200).json({ status: 'success', user: userWithoutPassword });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ status: 'fail', message: 'Server error', error: err.message });
 	}
 };
 
