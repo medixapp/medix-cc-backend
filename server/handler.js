@@ -1,4 +1,5 @@
 const { nanoid } = require('nanoid');
+const { predictClassification } = require('../services/classification');
 const express = require('express');
 const users = require('./users');
 const bcrypt = require('bcrypt');
@@ -61,24 +62,18 @@ const login = async (req, res) => {
 		const user = users.find((user) => user.email === email);
 
 		if (!user) {
-			return res
-				.status(400)
-				.json({ status: 'fail', message: 'User does not exist' });
+			return res.status(400).json({ status: 'fail', message: 'User does not exist' });
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
-			return res
-				.status(400)
-				.json({ status: 'fail', message: 'Invalid credentials' });
+			return res.status(400).json({ status: 'fail', message: 'Invalid credentials' });
 		}
 
 		const { password: _, ...userWithoutPassword } = user;
 		res.status(200).json({ status: 'success', user: userWithoutPassword });
 	} catch (err) {
-		res
-			.status(500)
-			.json({ status: 'fail', message: 'Server error', error: err.message });
+		res.status(500).json({ status: 'fail', message: 'Server error', error: err.message });
 	}
 };
 
@@ -92,4 +87,44 @@ const getAllUserLogin = (req, res) => {
 	});
 };
 
-module.exports = { register, getAllUserRegister, login, getAllUserLogin };
+//Disease Prediction Area
+async function diseasePredictHandler(request, h) {
+	const { text } = request.payload;
+	const { model } = request.server.app;
+
+	const id = crypto.randomUUID();
+	const createdAt = new Date().toISOString();
+
+	const data = {
+		id: id,
+		result: '',
+		suggestion: '',
+		createdAt: createdAt,
+	};
+
+	try {
+		predictionHistory.push(data);
+
+		const { label, suggestion } = await predictClassification(model, text);
+
+		data.result = label;
+		data.suggestion = suggestion;
+
+		const response = h.response({
+			status: 'success',
+			message: 'Model predicted successfully',
+			data,
+		});
+		response.code(201);
+		return response;
+	} catch (error) {
+		return h
+			.response({
+				status: 'fail',
+				message: `Terjadi kesalahan dalam melakukan prediksi`,
+			})
+			.code(400);
+	}
+}
+
+module.exports = { register, getAllUserRegister, login, getAllUserLogin, diseasePredictHandler };
