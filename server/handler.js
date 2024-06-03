@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const { predictClassification } = require('../services/classification');
+// const { predictClassification } = require('../services/classification');
 const express = require('express');
 const users = require('./users');
 const bcrypt = require('bcrypt');
@@ -88,43 +88,44 @@ const getAllUserLogin = (req, res) => {
 };
 
 //Disease Prediction Area
-async function diseasePredictHandler(request, h) {
-	const { text } = request.payload;
-	const { model } = request.server.app;
+// async function diseasePredictHandler(request, h) {
+// 	const { text } = request.payload;
+// 	const { model } = request.server.app;
 
-	const id = crypto.randomUUID();
-	const createdAt = new Date().toISOString();
+// 	const id = crypto.randomUUID();
+// 	const createdAt = new Date().toISOString();
 
-	const data = {
-		id: id,
-		result: '',
-		suggestion: '',
-		createdAt: createdAt,
-	};
+// 	const data = {
+// 		id: id,
+// 		result: '',
+// 		suggestion: '',
+// 		createdAt: createdAt,
+// 	};
 
-	try {
-		predictionHistory.push(data);
+// 	try {
+// 		predictionHistory.push(data);
 
-		const { label, suggestion } = await predictClassification(model, text);
+// 		const { label, suggestion } = await predictClassification(model, text);
 
-		data.result = label;
-		data.suggestion = suggestion;
+// 		data.result = label;
+// 		data.suggestion = suggestion;
 
-		const response = h.response({
-			status: 'success',
-			message: 'Model predicted successfully',
-			data,
-		});
-		response.code(201);
-		return response;
-	} catch (error) {
-		return h
-			.response({
-				status: 'fail',
-				message: `Terjadi kesalahan dalam melakukan prediksi`,
-			})
-			.code(400);
-	}
-}
+// 		const response = h.response({
+// 			status: 'success',
+// 			message: 'Model predicted successfully',
+// 			data,
+// 		});
+// 		response.code(201);
+// 		return response;
+// 	} catch (error) {
+// 		return h
+// 			.response({
+// 				status: 'fail',
+// 				message: `Terjadi kesalahan dalam melakukan prediksi`,
+// 			})
+// 			.code(400);
+// 	}
+// }
 
-module.exports = { register, getAllUserRegister, login, getAllUserLogin, diseasePredictHandler };
+// diseasePredictHandler
+module.exports = { register, getAllUserRegister, login, getAllUserLogin };
