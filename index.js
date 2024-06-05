@@ -1,28 +1,44 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const session = require('express-session');
-const flash = require('connect-flash');
+// const session = require('express-session');
+// const flash = require('connect-flash');
 const routes = require('./routes/routes');
-// const loadModel = require('../services/loadModel');
+const { loadModelDevin, loadModelDesika } = require('./services/loadmodel');
 
-const port = 3000;
+const startServer = async () => {
+	const port = 3000;
 
-app.use(express.json());
+	app.use(express.json());
+	app.use(express.urlencoded({ extended: true }));
+	// app.use(
+	// 	session({
+	// 		secret: 'your_secret_key', // Replace with a strong secret
+	// 		resave: false,
+	// 		saveUninitialized: true,
+	// 		cookie: { secure: false }, // Set to true if using HTTPS
+	// 	})
+	// );
+	// app.use(flash());
 
-app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    secret: 'your_secret_key', // Replace with a strong secret
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } // Set to true if using HTTPS
-}));
-app.use(flash());
+	try {
+		const modelA = await loadModelDevin();
+		app.modelA = modelA;
 
-// const model = await loadModel();
-// app.locals.model = model;
+		const modelB = await loadModelDesika();
+		app.modelB = modelB;
 
-app.use('/', routes);
+		app.use('/', routes);
 
-app.listen(port, () => {
-	console.log(`http://localhost:${port}`);
+		app.listen(port, () => {
+			console.log(`http://localhost:${port}`);
+		});
+	} catch (error) {
+		console.error('Stack trace:', error.stack);
+	}
+};
+
+startServer().catch((err) => {
+	console.error('Unexpected error starting server:', err.message);
+	console.error('Stack trace:', err.stack);
 });

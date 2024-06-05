@@ -1,47 +1,93 @@
 const { nanoid } = require('nanoid');
-// const { predictClassification } = require('../services/classification');
-const express = require('express');
-const users = require('../data/users');
-const bcrypt = require('bcrypt');
+const {
+	predictClassificationDevin,
+	preprocessInputDevin,
+	predictClassificationDesika,
+	preprocessInputDesika,
+} = require('../services/classification');
+const allSymptoms = require('../data/allSymptoms');
+const model = require('../data/model');
 
-//Disease Prediction Area
-// async function diseasePredictHandler(request, h) {
-// 	const { text } = request.payload;
-// 	const { model } = request.server.app;
+const diseasePredictDevin = async (req, res) => {
+	try {
+		const { text } = req.body;
+		const { modelA } = req.app;
+		const id = nanoid();
+		const createdAt = new Date().toISOString();
 
-// 	const id = crypto.randomUUID();
-// 	const createdAt = new Date().toISOString();
+		const data = {
+			id: id,
+			result: '',
+			suggestion: '',
+			createdAt: createdAt,
+		};
+		model.push(data);
 
-// 	const data = {
-// 		id: id,
-// 		result: '',
-// 		suggestion: '',
-// 		createdAt: createdAt,
-// 	};
+		const preprocessedInput = preprocessInputDevin(text);
+		const { label, suggestion } = await predictClassificationDevin(modelA, preprocessedInput);
 
-// 	try {
-// 		predictionHistory.push(data);
+		data.result = label;
+		data.suggestion = suggestion;
 
-// 		const { label, suggestion } = await predictClassification(model, text);
+		res.status(200).json({
+			status: 'success',
+			message: 'Model Devin Berhasil diprediksi',
+			data,
+		});
+	} catch (error) {
+		console.error('Error in diseasePredictHandler:', error.message);
+		console.error('Stack trace:', error.stack);
+		res.status(400).json({
+			status: 'fail',
+			message: `Terjadi kesalahan dalam melakukan prediksi: ${error.message}`,
+		});
+	}
+};
 
-// 		data.result = label;
-// 		data.suggestion = suggestion;
+const diseasePredictDesika = async (req, res) => {
+	try {
+		const { inputSymptoms } = req.body;
+		const { modelB } = req.app;
 
-// 		const response = h.response({
-// 			status: 'success',
-// 			message: 'Model predicted successfully',
-// 			data,
-// 		});
-// 		response.code(201);
-// 		return response;
-// 	} catch (error) {
-// 		return h
-// 			.response({
-// 				status: 'fail',
-// 				message: `Terjadi kesalahan dalam melakukan prediksi`,
-// 			})
-// 			.code(400);
-// 	}
-// }
+		const id = nanoid();
+		const createdAt = new Date().toISOString();
 
-// diseasePredictHandler
+		const data = {
+			id: id,
+			result: '',
+			suggestion: '',
+			createdAt: createdAt,
+		};
+		model.push(data);
+
+		const preprocessedInput = preprocessInputDesika(inputSymptoms, allSymptoms);
+		const { label, suggestion } = await predictClassificationDesika(modelB, preprocessedInput);
+
+		data.result = label;
+		data.suggestion = suggestion;
+
+		res.status(200).json({
+			status: 'success',
+			message: 'Model predicted successfully',
+			data,
+		});
+	} catch (error) {
+		console.error('Error in diseasePredictHandler:', error.message);
+		console.error('Stack trace:', error.stack);
+		res.status(400).json({
+			status: 'fail',
+			message: `Terjadi kesalahan dalam melakukan prediksi: ${error.message}`,
+		});
+	}
+};
+
+const getALLPredict = async (req, res) => {
+	res.json({
+		status: 'success',
+		data: {
+			model,
+		},
+	});
+};
+
+module.exports = { diseasePredictDevin, diseasePredictDesika, getALLPredict };
