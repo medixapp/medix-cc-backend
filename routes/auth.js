@@ -8,9 +8,9 @@ const { isAuthenticated } = require('../middleware/auth');
 auth.post('/register', register);
 auth.post('/login', login);
 auth.post('/logout', logout);
-auth.get('/profile', isAuthenticated, getProfile);
 
 // profile page route
+auth.get('/profile', isAuthenticated, getProfile);
 router.post('/profile', isAuthenticated, upload.single('profileImage'), updateProfile);
 
 // for testing only

@@ -15,6 +15,8 @@ const register = async (req, res) => {
 			username,
 			email,
 			password: passwordHash,
+			description: '',
+            profileImage: '',
 		};
 		users.push(addUser);
 
