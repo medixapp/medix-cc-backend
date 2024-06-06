@@ -5,6 +5,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const auth = require('./routes/auth');
 const predict = require('./routes/predict');
+const article = require('./routes/article');
 const { loadModelDevin, loadModelDesika } = require('./services/loadmodel');
 
 const startServer = async () => {
@@ -30,6 +31,7 @@ const startServer = async () => {
 
 		app.use('/', auth);
 		app.use('/', predict);
+		app.use('/', article);
 
 		app.listen(port, () => {
 			console.log(`http://localhost:${port}`);
