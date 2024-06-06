@@ -7,7 +7,6 @@ const register = async (req, res) => {
 	try {
 		const { username, email, password } = req.body;
 		const id = nanoid(16);
-
 		const salt = await bcrypt.genSalt();
 		const passwordHash = await bcrypt.hash(password, salt);
 
@@ -18,6 +17,7 @@ const register = async (req, res) => {
 			password: passwordHash,
 		};
 		users.push(addUser);
+
 		const isSuccess = users.filter((user) => user.id === id).length > 0;
 		if (isSuccess) {
 			res.status(200).json({

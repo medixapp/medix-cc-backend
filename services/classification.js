@@ -3,7 +3,6 @@ const words = require('../data/word');
 
 async function predictClassificationDevin(modelA, preprocessedInputDevin) {
 	const inputTensor = tf.tensor([preprocessedInputDevin], [1, 20]);
-
 	const prediction = modelA.predict(inputTensor);
 	const predictionArray = prediction.dataSync();
 	const classes = {
@@ -25,56 +24,55 @@ async function predictClassificationDevin(modelA, preprocessedInputDevin) {
 
 	const maxPrediction = predictionArray.indexOf(Math.max(...predictionArray));
 	const label = classes[maxPrediction];
-	let suggestion;
+	let desc;
 
 	switch (label) {
 		case 'Konstipasi':
-			suggestion = 'Perbanyak konsumsi serat dan air putih.';
+			desc = 'Perbanyak konsumsi serat dan air putih.';
 			break;
 		case 'Inflammatory Bowel Disease (IBD)':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Irritable Bowel Syndrome (IBS)':
-			suggestion = 'Kelola stress dan perhatikan pola makan.';
+			desc = 'Kelola stress dan perhatikan pola makan.';
 			break;
 		case 'Maag':
-			suggestion = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
 			break;
 		case 'Hepatitis':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Diare':
-			suggestion = 'Perbanyak minum air untuk mencegah dehidrasi.';
+			desc = 'Perbanyak minum air untuk mencegah dehidrasi.';
 			break;
 		case 'Disentri':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Tukak lambung':
-			suggestion = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
 			break;
 		case 'Tifus':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Celiac':
-			suggestion = 'Hindari makanan yang mengandung gluten.';
+			desc = 'Hindari makanan yang mengandung gluten.';
 			break;
 		case 'GERD':
-			suggestion = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
 			break;
 		case 'Batu Empedu':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Ambeien':
-			suggestion = 'Perbanyak konsumsi serat dan air putih.';
+			desc = 'Perbanyak konsumsi serat dan air putih.';
 			break;
 		case 'Usus Buntu':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		default:
-			suggestion = 'Tidak diketahui, segera periksa ke dokter.';
+			desc = 'Tidak diketahui, segera periksa ke dokter.';
 	}
-
-	return { label, suggestion };
+	return { label, desc };
 }
 
 async function predictClassificationDesika(modelB, preprocessedInputDesika) {
@@ -100,56 +98,55 @@ async function predictClassificationDesika(modelB, preprocessedInputDesika) {
 
 	const maxPrediction = predictionArray.indexOf(Math.max(...predictionArray));
 	const label = classes[maxPrediction];
-	let suggestion;
+	let desc;
 
 	switch (label) {
 		case 'Konstipasi':
-			suggestion = 'Perbanyak konsumsi serat dan air putih.';
+			desc = 'Perbanyak konsumsi serat dan air putih.';
 			break;
 		case 'Inflammatory Bowel Disease (IBD)':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Irritable Bowel Syndrome (IBS)':
-			suggestion = 'Kelola stress dan perhatikan pola makan.';
+			desc = 'Kelola stress dan perhatikan pola makan.';
 			break;
 		case 'Maag':
-			suggestion = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
 			break;
 		case 'Hepatitis':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Diare':
-			suggestion = 'Perbanyak minum air untuk mencegah dehidrasi.';
+			desc = 'Perbanyak minum air untuk mencegah dehidrasi.';
 			break;
 		case 'Disentri':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Tukak lambung':
-			suggestion = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
 			break;
 		case 'Tifus':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Celiac':
-			suggestion = 'Hindari makanan yang mengandung gluten.';
+			desc = 'Hindari makanan yang mengandung gluten.';
 			break;
 		case 'GERD':
-			suggestion = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
 			break;
 		case 'Batu Empedu':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		case 'Ambeien':
-			suggestion = 'Perbanyak konsumsi serat dan air putih.';
+			desc = 'Perbanyak konsumsi serat dan air putih.';
 			break;
 		case 'Usus Buntu':
-			suggestion = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
 			break;
 		default:
-			suggestion = 'Tidak diketahui, segera periksa ke dokter.';
+			desc = 'Tidak diketahui, segera periksa ke dokter.';
 	}
-
-	return { label, suggestion };
+	return { label, desc };
 }
 
 function preprocessInputDevin(text) {
@@ -160,7 +157,6 @@ function preprocessInputDevin(text) {
 
 	// Remove commas and periods
 	let string = text.replace(/,/g, '').replace(/\./g, '');
-
 	// Split the string into an array of words
 	let strArr = string.split(' ');
 	let strConverted = [];
@@ -192,22 +188,13 @@ function preprocessInputDesika(inputSymptoms, allSymptoms) {
 	const inputArray = new Array(inputSymptoms.map((symptom) => symptom.toLowerCase()))[0];
 	const normalizedAllSymptoms = allSymptoms.map((symptom) => symptom.toLowerCase());
 
-	// Debugging: log inputSymptoms and normalizedAllSymptoms
-	// console.log('Input Symptoms:', Array.from(inputSymptoms));
-	// console.log('Normalized All Symptoms:', normalizedAllSymptoms);
-
 	// Initialize an array with zeros, one for each symptom in allSymptoms
 	const binaryVector = Array(normalizedAllSymptoms.length).fill(0);
-
 	for (const [index, symptom] of normalizedAllSymptoms.entries()) {
 		if (inputArray.includes(symptom)) {
 			binaryVector[index] = 1;
 		}
 	}
-
-	//Debugging BinaryVector
-	console.log(binaryVector);
-
 	return binaryVector;
 }
 
