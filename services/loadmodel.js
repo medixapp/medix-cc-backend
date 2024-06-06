@@ -1,11 +1,11 @@
-const tf = require('@tensorflow/tfjs-node');
+// const tf = require('@tensorflow/tfjs-node');
 
-async function loadModelDevin() {
-	return tf.loadLayersModel(process.env.MODEL_DEVIN);
-}
+// async function loadModelDevin() {
+// 	return tf.loadLayersModel(process.env.MODEL_DEVIN);
+// }
 
-async function loadModelDesika() {
-	return tf.loadLayersModel(process.env.MODEL_DESIKA);
-}
+// async function loadModelDesika() {
+// 	return tf.loadLayersModel(process.env.MODEL_DESIKA);
+// }
 
-module.exports = { loadModelDesika, loadModelDevin };
+// module.exports = { loadModelDesika, loadModelDevin };

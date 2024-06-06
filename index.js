@@ -4,9 +4,9 @@ const app = express();
 const session = require('express-session');
 const flash = require('connect-flash');
 const auth = require('./routes/auth');
-const predict = require('./routes/predict');
+// const predict = require('./routes/predict');
 const article = require('./routes/article');
-const { loadModelDevin, loadModelDesika } = require('./services/loadmodel');
+// const { loadModelDevin, loadModelDesika } = require('./services/loadmodel');
 
 const startServer = async () => {
 	const port = 3000;
@@ -23,14 +23,14 @@ const startServer = async () => {
 	app.use(flash());
 
 	try {
-		const modelA = await loadModelDevin();
-		app.modelA = modelA;
+		// const modelA = await loadModelDevin();
+		// app.modelA = modelA;
 
-		const modelB = await loadModelDesika();
-		app.modelB = modelB;
+		// const modelB = await loadModelDesika();
+		// app.modelB = modelB;
 
 		app.use('/', auth);
-		app.use('/', predict);
+		// app.use('/', predict);
 		app.use('/', article);
 
 		app.listen(port, () => {
