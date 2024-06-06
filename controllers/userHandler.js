@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const users = require('../models/users');
+const users = require('../data/users');
 const multer = require('multer');
 const path = require('path');
 
