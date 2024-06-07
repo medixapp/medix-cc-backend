@@ -11,7 +11,7 @@ auth.post('/logout', logout);
 
 // profile page route
 auth.get('/profile', isAuthenticated, getProfile);
-auth.post('/profile', isAuthenticated, upload.single('profileImage'), updateProfile);
+auth.post('/profile/update', isAuthenticated, upload.single('profileImage'), updateProfile);
 
 // for testing only
 auth.get('/register', getAllUserRegister);
