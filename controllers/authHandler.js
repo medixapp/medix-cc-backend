@@ -6,15 +6,15 @@ const bcrypt = require('bcrypt');
 const register = async (req, res) => {
 	try {
 		const { username, email, password } = req.body;
-		
+
 		const existingUser = users.find((user) => user.email === email);
-        if (existingUser) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Email already exists',
-            });
-        }
-		
+		if (existingUser) {
+			return res.status(400).json({
+				status: 'fail',
+				message: 'Email already exists',
+			});
+		}
+
 		const id = nanoid(16);
 		const salt = await bcrypt.genSalt();
 		const passwordHash = await bcrypt.hash(password, salt);
@@ -25,7 +25,7 @@ const register = async (req, res) => {
 			email,
 			password: passwordHash,
 			description: '',
-            profileImage: '',
+			profileImage: '',
 		};
 		users.push(addUser);
 
@@ -40,9 +40,9 @@ const register = async (req, res) => {
 			});
 		} else {
 			res.status(500).json({
-                status: 'fail',
-                message: 'User registration failed',
-            });
+				status: 'fail',
+				message: 'User registration failed',
+			});
 		}
 	} catch (err) {
 		res.status(500).json({

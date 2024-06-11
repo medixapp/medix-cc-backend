@@ -2,24 +2,24 @@
 // const words = require('../data/word');
 
 // async function predictClassificationDevin(modelA, preprocessedInputDevin) {
-// 	const inputTensor = tf.tensor([preprocessedInputDevin], [1, 20]);
+// 	const inputTensor = tf.tensor([preprocessedInputDevin], [1, 88]);
 // 	const prediction = modelA.predict(inputTensor);
 // 	const predictionArray = prediction.dataSync();
 // 	const classes = {
-// 		0: 'Hepatitis',
-// 		1: 'Usus Buntu',
+// 		0: 'Inflammatory Bowel Disease (IBD)',
+// 		1: 'Tipes',
 // 		2: 'GERD',
-// 		3: 'Ambeien',
-// 		4: 'Celiac',
+// 		3: 'Tukak lambung',
+// 		4: 'Hepatitis',
 // 		5: 'Irritable Bowel Syndrome (IBS)',
 // 		6: 'Batu Empedu',
-// 		7: 'Diare',
-// 		8: 'Tifus',
-// 		9: 'Disentri',
+// 		7: 'Celiac',
+// 		8: 'Konstipasi',
+// 		9: 'Usus Buntu',
 // 		10: 'Maag',
-// 		11: 'Tukak lambung',
-// 		12: 'Konstipasi',
-// 		13: 'Inflammatory Bowel Disease (IBD)',
+// 		11: 'Ambeien',
+// 		12: 'Disentri',
+// 		13: 'Diare',
 // 	};
 
 // 	const maxPrediction = predictionArray.indexOf(Math.max(...predictionArray));
@@ -152,7 +152,7 @@
 // function preprocessInputDevin(text) {
 // 	if (typeof text !== 'string') {
 // 		console.error('Invalid input: text should be a string');
-// 		return Array(20).fill(0); // Return an array of 20 zeros if input is invalid
+// 		return Array(88).fill(0); // Return an array of 20 zeros if input is invalid
 // 	}
 
 // 	// Remove commas and periods
@@ -171,13 +171,13 @@
 // 	}
 
 // 	// Ensure the array has a length of 20 by padding with zeros or truncating
-// 	if (strConverted.length < 20) {
-// 		let numOfZero = 20 - strConverted.length;
+// 	if (strConverted.length < 88) {
+// 		let numOfZero = 88 - strConverted.length;
 // 		for (let i = 0; i < numOfZero; i++) {
 // 			strConverted.push(0);
 // 		}
 // 	} else {
-// 		strConverted = strConverted.slice(0, 20);
+// 		strConverted = strConverted.slice(0, 88);
 // 	}
 
 // 	return strConverted;
