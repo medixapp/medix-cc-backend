@@ -1,14 +1,16 @@
 const { nanoid } = require('nanoid');
-const users = require('../data/users');
 const bcrypt = require('bcrypt');
+
+const { storeData, db } = require('../services/storeUser');
 
 // Register Area
 const register = async (req, res) => {
 	try {
 		const { username, email, password } = req.body;
-
-		const existingUser = users.find((user) => user.email === email);
-		if (existingUser) {
+		// Check if email already exists
+		const usersRef = db.collection('users');
+		const querySnapshot = await usersRef.where('email', '==', email).get();
+		if (!querySnapshot.empty) {
 			return res.status(400).json({
 				status: 'fail',
 				message: 'Email already exists',
@@ -27,23 +29,15 @@ const register = async (req, res) => {
 			description: '',
 			profileImage: '',
 		};
-		users.push(addUser);
+		await storeData(id, addUser);
 
-		const isSuccess = users.filter((user) => user.id === id).length > 0;
-		if (isSuccess) {
-			res.status(200).json({
-				status: 'success',
-				message: 'User registered successfully',
-				data: {
-					userId: id,
-				},
-			});
-		} else {
-			res.status(500).json({
-				status: 'fail',
-				message: 'User registration failed',
-			});
-		}
+		res.status(200).json({
+			status: 'success',
+			message: 'User registered successfully',
+			data: {
+				userId: id,
+			},
+		});
 	} catch (err) {
 		res.status(500).json({
 			status: 'fail',
@@ -56,12 +50,18 @@ const register = async (req, res) => {
 const login = async (req, res) => {
 	try {
 		const { email, password } = req.body;
-		const user = users.find((user) => user.email === email);
 
-		if (!user) {
+		// Fetch user from Firestore
+		const usersRef = db.collection('users');
+		const querySnapshot = await usersRef.where('email', '==', email).get();
+
+		if (querySnapshot.empty) {
 			req.flash('error', 'User does not exist');
 			return res.status(400).json({ status: 'fail', message: 'User does not exist' });
 		}
+
+		const userDoc = querySnapshot.docs[0];
+		const user = userDoc.data();
 
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
@@ -87,13 +87,21 @@ const logout = (req, res) => {
 };
 
 //Testing Area
-const getAllUserRegister = (req, res) => {
-	res.json({
-		status: 'success',
-		data: {
-			users,
-		},
-	});
+const getAllUserRegister = async (req, res) => {
+	try {
+		const usersRef = db.collection('users');
+		const querySnapshot = await usersRef.get();
+		const users = querySnapshot.docs.map((doc) => doc.data());
+
+		res.json({
+			status: 'success',
+			data: {
+				users,
+			},
+		});
+	} catch (err) {
+		res.status(500).json({ status: 'fail', message: 'Server error', error: err.message });
+	}
 };
 
 module.exports = { register, login, logout, getAllUserRegister };

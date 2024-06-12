@@ -1,11 +1,11 @@
-// const tf = require('@tensorflow/tfjs-node');
+const tf = require('@tensorflow/tfjs-node');
 
-// async function loadModelDevin() {
-// 	return tf.loadLayersModel(process.env.MODEL_DEVIN);
-// }
+async function loadModelEmbedding() {
+	return tf.loadLayersModel(process.env.MODEL_Embedding);
+}
 
-// async function loadModelDesika() {
-// 	return tf.loadLayersModel(process.env.MODEL_DESIKA);
-// }
+async function loadModelOnehot() {
+	return tf.loadLayersModel(process.env.MODEL_OneHot);
+}
 
-// module.exports = { loadModelDesika, loadModelDevin };
+module.exports = { loadModelEmbedding, loadModelOnehot };

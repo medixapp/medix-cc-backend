@@ -1,201 +1,205 @@
-// const tf = require('@tensorflow/tfjs-node');
-// const words = require('../data/word');
+const tf = require('@tensorflow/tfjs-node');
+const { classesA, classesB } = require('../data/classes');
+const words = require('../data/word');
 
-// async function predictClassificationDevin(modelA, preprocessedInputDevin) {
-// 	const inputTensor = tf.tensor([preprocessedInputDevin], [1, 88]);
-// 	const prediction = modelA.predict(inputTensor);
-// 	const predictionArray = prediction.dataSync();
-// 	const classes = {
-// 		0: 'Inflammatory Bowel Disease (IBD)',
-// 		1: 'Tipes',
-// 		2: 'GERD',
-// 		3: 'Tukak lambung',
-// 		4: 'Hepatitis',
-// 		5: 'Irritable Bowel Syndrome (IBS)',
-// 		6: 'Batu Empedu',
-// 		7: 'Celiac',
-// 		8: 'Konstipasi',
-// 		9: 'Usus Buntu',
-// 		10: 'Maag',
-// 		11: 'Ambeien',
-// 		12: 'Disentri',
-// 		13: 'Diare',
-// 	};
+async function classificationEmbedding(modelA, preprocessInputEmbedding) {
+	const inputTensor = tf.tensor([preprocessInputEmbedding], [1, 88]);
+	const prediction = modelA.predict(inputTensor);
+	const predictionArray = prediction.dataSync();
+	const predictions = Array.from(predictionArray).map((confidence, index) => ({
+		label: classesA[index],
+		confidence,
+	}));
 
-// 	const maxPrediction = predictionArray.indexOf(Math.max(...predictionArray));
-// 	const label = classes[maxPrediction];
-// 	let desc;
+	for (const prediction of predictions) {
+		switch (prediction.label) {
+			case 'Konstipasi':
+				prediction.desc = 'Perbanyak konsumsi serat dan air putih.';
+				prediction.penyebab = 'Kurangnya asupan serat dan cairan.';
+				break;
+			case 'Inflammatory Bowel Disease (IBD)':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Penyebab pasti tidak diketahui, diduga karena faktor genetik dan lingkungan.';
+				break;
+			case 'Irritable Bowel Syndrome (IBS)':
+				prediction.desc = 'Kelola stress dan perhatikan pola makan.';
+				prediction.penyebab = 'Stress, perubahan pola makan, dan gangguan fungsi usus.';
+				break;
+			case 'Maag':
+				prediction.desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+				prediction.penyebab = 'Pola makan tidak teratur, stress, konsumsi makanan pedas dan asam.';
+				break;
+			case 'Hepatitis':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Infeksi virus, konsumsi alkohol berlebih, penggunaan obat-obatan tertentu.';
+				break;
+			case 'Diare':
+				prediction.desc = 'Perbanyak minum air untuk mencegah dehidrasi.';
+				prediction.penyebab = 'Infeksi bakteri atau virus, keracunan makanan, intoleransi makanan.';
+				break;
+			case 'Disentri':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Infeksi bakteri atau ameba.';
+				break;
+			case 'Tukak lambung':
+				prediction.desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+				prediction.penyebab = 'Infeksi Helicobacter pylori, penggunaan NSAID jangka panjang.';
+				break;
+			case 'Tipes':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Infeksi bakteri Salmonella typhi.';
+				break;
+			case 'Celiac':
+				prediction.desc = 'Hindari makanan yang mengandung gluten.';
+				prediction.penyebab = 'Reaksi autoimun terhadap gluten.';
+				break;
+			case 'GERD':
+				prediction.desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+				prediction.penyebab =
+					'Relaksasi sfingter esofagus bawah yang berlebihan, obesitas, konsumsi makanan pedas dan asam.';
+				break;
+			case 'Batu Empedu':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Pembentukan kristal kolesterol atau bilirubin dalam kantong empedu.';
+				break;
+			case 'Ambeien':
+				prediction.desc = 'Perbanyak konsumsi serat dan air putih.';
+				prediction.penyebab = 'Tekanan berlebih pada pembuluh darah di sekitar anus.';
+				break;
+			case 'Usus Buntu':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Penyumbatan pada usus buntu yang menyebabkan peradangan.';
+				break;
+			default:
+				prediction.desc = 'Tidak diketahui, segera periksa ke dokter.';
+				prediction.penyebab = 'Penyebab tidak diketahui.';
+		}
+	}
+	return predictions;
+}
 
-// 	switch (label) {
-// 		case 'Konstipasi':
-// 			desc = 'Perbanyak konsumsi serat dan air putih.';
-// 			break;
-// 		case 'Inflammatory Bowel Disease (IBD)':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Irritable Bowel Syndrome (IBS)':
-// 			desc = 'Kelola stress dan perhatikan pola makan.';
-// 			break;
-// 		case 'Maag':
-// 			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
-// 			break;
-// 		case 'Hepatitis':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Diare':
-// 			desc = 'Perbanyak minum air untuk mencegah dehidrasi.';
-// 			break;
-// 		case 'Disentri':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Tukak lambung':
-// 			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
-// 			break;
-// 		case 'Tifus':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Celiac':
-// 			desc = 'Hindari makanan yang mengandung gluten.';
-// 			break;
-// 		case 'GERD':
-// 			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
-// 			break;
-// 		case 'Batu Empedu':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Ambeien':
-// 			desc = 'Perbanyak konsumsi serat dan air putih.';
-// 			break;
-// 		case 'Usus Buntu':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		default:
-// 			desc = 'Tidak diketahui, segera periksa ke dokter.';
-// 	}
-// 	return { label, desc };
-// }
+async function classificationOneHot(modelB, preprocessInputOneHot) {
+	const inputTensor = tf.tensor([preprocessInputOneHot], [1, 58]);
+	const prediction = modelB.predict(inputTensor);
+	const predictionArray = prediction.dataSync();
+	const predictions = Array.from(predictionArray).map((confidence, index) => ({
+		label: classesB[index],
+		confidence,
+	}));
 
-// async function predictClassificationDesika(modelB, preprocessedInputDesika) {
-// 	const inputTensor = tf.tensor([preprocessedInputDesika], [1, 58]);
-// 	const prediction = modelB.predict(inputTensor);
-// 	const predictionArray = prediction.dataSync();
-// 	const classes = {
-// 		0: 'Ambeien',
-// 		1: 'Batu Empedu',
-// 		2: 'Celiac',
-// 		3: 'Diare',
-// 		4: 'Disentri',
-// 		5: 'GERD',
-// 		6: 'Hepatitis',
-// 		7: 'Inflammatory Bowel Disease (IBD)',
-// 		8: 'Irritable Bowel Syndrome (IBS)',
-// 		9: 'Konstipasi',
-// 		10: 'Maag',
-// 		11: 'Tifus',
-// 		12: 'Tukak lambung',
-// 		13: 'Usus Buntu',
-// 	};
+	for (const prediction of predictions) {
+		switch (prediction.label) {
+			case 'Konstipasi':
+				prediction.desc = 'Perbanyak konsumsi serat dan air putih.';
+				prediction.penyebab = 'Kurangnya asupan serat dan cairan.';
+				break;
+			case 'Inflammatory Bowel Disease (IBD)':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Penyebab pasti tidak diketahui, diduga karena faktor genetik dan lingkungan.';
+				break;
+			case 'Irritable Bowel Syndrome (IBS)':
+				prediction.desc = 'Kelola stress dan perhatikan pola makan.';
+				prediction.penyebab = 'Stress, perubahan pola makan, dan gangguan fungsi usus.';
+				break;
+			case 'Maag':
+				prediction.desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+				prediction.penyebab = 'Pola makan tidak teratur, stress, konsumsi makanan pedas dan asam.';
+				break;
+			case 'Hepatitis':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Infeksi virus, konsumsi alkohol berlebih, penggunaan obat-obatan tertentu.';
+				break;
+			case 'Diare':
+				prediction.desc = 'Perbanyak minum air untuk mencegah dehidrasi.';
+				prediction.penyebab = 'Infeksi bakteri atau virus, keracunan makanan, intoleransi makanan.';
+				break;
+			case 'Disentri':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Infeksi bakteri atau ameba.';
+				break;
+			case 'Tukak lambung':
+				prediction.desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+				prediction.penyebab = 'Infeksi Helicobacter pylori, penggunaan NSAID jangka panjang.';
+				break;
+			case 'Tipes':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Infeksi bakteri Salmonella typhi.';
+				break;
+			case 'Celiac':
+				prediction.desc = 'Hindari makanan yang mengandung gluten.';
+				prediction.penyebab = 'Reaksi autoimun terhadap gluten.';
+				break;
+			case 'GERD':
+				prediction.desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
+				prediction.penyebab =
+					'Relaksasi sfingter esofagus bawah yang berlebihan, obesitas, konsumsi makanan pedas dan asam.';
+				break;
+			case 'Batu Empedu':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Pembentukan kristal kolesterol atau bilirubin dalam kantong empedu.';
+				break;
+			case 'Ambeien':
+				prediction.desc = 'Perbanyak konsumsi serat dan air putih.';
+				prediction.penyebab = 'Tekanan berlebih pada pembuluh darah di sekitar anus.';
+				break;
+			case 'Usus Buntu':
+				prediction.desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
+				prediction.penyebab = 'Penyumbatan pada usus buntu yang menyebabkan peradangan.';
+				break;
+			default:
+				prediction.desc = 'Tidak diketahui, segera periksa ke dokter.';
+				prediction.penyebab = 'Penyebab tidak diketahui.';
+		}
+	}
+	return predictions;
+}
 
-// 	const maxPrediction = predictionArray.indexOf(Math.max(...predictionArray));
-// 	const label = classes[maxPrediction];
-// 	let desc;
+function preprocessInputEmbedding(text) {
+	if (typeof text !== 'string') {
+		console.error('Invalid input: text should be a string');
+		return Array(88).fill(0); // Return an array of 20 zeros if input is invalid
+	}
 
-// 	switch (label) {
-// 		case 'Konstipasi':
-// 			desc = 'Perbanyak konsumsi serat dan air putih.';
-// 			break;
-// 		case 'Inflammatory Bowel Disease (IBD)':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Irritable Bowel Syndrome (IBS)':
-// 			desc = 'Kelola stress dan perhatikan pola makan.';
-// 			break;
-// 		case 'Maag':
-// 			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
-// 			break;
-// 		case 'Hepatitis':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Diare':
-// 			desc = 'Perbanyak minum air untuk mencegah dehidrasi.';
-// 			break;
-// 		case 'Disentri':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Tukak lambung':
-// 			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
-// 			break;
-// 		case 'Tifus':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Celiac':
-// 			desc = 'Hindari makanan yang mengandung gluten.';
-// 			break;
-// 		case 'GERD':
-// 			desc = 'Hindari makanan pedas dan asam, serta makan dengan teratur.';
-// 			break;
-// 		case 'Batu Empedu':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		case 'Ambeien':
-// 			desc = 'Perbanyak konsumsi serat dan air putih.';
-// 			break;
-// 		case 'Usus Buntu':
-// 			desc = 'Segera periksa ke dokter untuk penanganan lebih lanjut.';
-// 			break;
-// 		default:
-// 			desc = 'Tidak diketahui, segera periksa ke dokter.';
-// 	}
-// 	return { label, desc };
-// }
+	// Remove commas and periods
+	let string = text.replace(/,/g, '').replace(/\./g, '');
+	// Split the string into an array of words
+	let strArr = string.split(' ');
+	let strConverted = [];
 
-// function preprocessInputDevin(text) {
-// 	if (typeof text !== 'string') {
-// 		console.error('Invalid input: text should be a string');
-// 		return Array(88).fill(0); // Return an array of 20 zeros if input is invalid
-// 	}
+	// Convert words to integers based on the dictionary
+	for (let w of strArr) {
+		if (words[w] === undefined) {
+			strConverted.push(1); // Use 1 for unknown words
+		} else {
+			strConverted.push(words[w]);
+		}
+	}
 
-// 	// Remove commas and periods
-// 	let string = text.replace(/,/g, '').replace(/\./g, '');
-// 	// Split the string into an array of words
-// 	let strArr = string.split(' ');
-// 	let strConverted = [];
+	// Ensure the array has a length of 20 by padding with zeros or truncating
+	if (strConverted.length < 88) {
+		let numOfZero = 88 - strConverted.length;
+		for (let i = 0; i < numOfZero; i++) {
+			strConverted.push(0);
+		}
+	} else {
+		strConverted = strConverted.slice(0, 88);
+	}
+	return strConverted;
+}
 
-// 	// Convert words to integers based on the dictionary
-// 	for (let w of strArr) {
-// 		if (words[w] === undefined) {
-// 			strConverted.push(1); // Use 1 for unknown words
-// 		} else {
-// 			strConverted.push(words[w]);
-// 		}
-// 	}
+function preprocessInputOneHot(inputSymptoms, allSymptoms) {
+	// Normalize symptoms to lower case
+	const inputArray = new Array(inputSymptoms.map((symptom) => symptom.toLowerCase()))[0];
+	const normalizedAllSymptoms = allSymptoms.map((symptom) => symptom.toLowerCase());
 
-// 	// Ensure the array has a length of 20 by padding with zeros or truncating
-// 	if (strConverted.length < 88) {
-// 		let numOfZero = 88 - strConverted.length;
-// 		for (let i = 0; i < numOfZero; i++) {
-// 			strConverted.push(0);
-// 		}
-// 	} else {
-// 		strConverted = strConverted.slice(0, 88);
-// 	}
+	// Initialize an array with zeros, one for each symptom in allSymptoms
+	const binaryVector = Array(normalizedAllSymptoms.length).fill(0);
+	for (const [index, symptom] of normalizedAllSymptoms.entries()) {
+		if (inputArray.includes(symptom)) {
+			binaryVector[index] = 1;
+		}
+	}
+	return binaryVector;
+}
 
-// 	return strConverted;
-// }
-
-// function preprocessInputDesika(inputSymptoms, allSymptoms) {
-// 	// Normalize symptoms to lower case
-// 	const inputArray = new Array(inputSymptoms.map((symptom) => symptom.toLowerCase()))[0];
-// 	const normalizedAllSymptoms = allSymptoms.map((symptom) => symptom.toLowerCase());
-
-// 	// Initialize an array with zeros, one for each symptom in allSymptoms
-// 	const binaryVector = Array(normalizedAllSymptoms.length).fill(0);
-// 	for (const [index, symptom] of normalizedAllSymptoms.entries()) {
-// 		if (inputArray.includes(symptom)) {
-// 			binaryVector[index] = 1;
-// 		}
-// 	}
-// 	return binaryVector;
-// }
-
-// module.exports = { predictClassificationDevin, predictClassificationDesika, preprocessInputDevin, preprocessInputDesika };
+module.exports = { classificationEmbedding, classificationOneHot, preprocessInputEmbedding, preprocessInputOneHot };

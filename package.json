@@ -10,6 +10,8 @@
 	"license": "ISC",
 	"description": "Backend Area for Medix App",
 	"dependencies": {
+		"@google-cloud/firestore": "^7.8.0",
+		"@tensorflow/tfjs-node": "^4.20.0",
 		"bcrypt": "^5.1.1",
 		"connect-flash": "^0.1.1",
 		"dotenv": "^16.4.5",
