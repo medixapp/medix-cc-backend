@@ -7,7 +7,7 @@ const {
 } = require('../services/classification');
 const { allSymptoms } = require('../data/allSymptoms');
 const diseaseInfo = require('../data/medicineInfo');
-const model = require('../data/model');
+const { storeModel, db } = require('../services/database/storeModel');
 
 const embeddingPredict = async (req, res) => {
 	try {
@@ -17,11 +17,11 @@ const embeddingPredict = async (req, res) => {
 		const createdAt = new Date().toISOString();
 
 		const data = {
-			id: id,
+			id,
 			results: [],
-			createdAt: createdAt,
+			createdAt,
 		};
-		model.push(data);
+		await storeModel(id, data);
 
 		const preprocessedInput = preprocessInputEmbedding(text);
 		const predictions = await classificationEmbedding(modelA, preprocessedInput);
@@ -36,10 +36,12 @@ const embeddingPredict = async (req, res) => {
 		data.results = finalPredictions;
 		data.result = finalPredictions[0].label;
 
+		await storeModel(id, data);
+
 		const response = {
-			id: id,
+			id,
 			results: finalPredictions,
-			createdAt: createdAt,
+			createdAt,
 		};
 
 		res.status(200).json({
@@ -63,12 +65,11 @@ const oneHotPredict = async (req, res) => {
 		const createdAt = new Date().toISOString();
 
 		const data = {
-			id: id,
-			result: '',
-			desc: '',
-			createdAt: createdAt,
+			id,
+			results: [],
+			createdAt,
 		};
-		model.push(data);
+		await storeModel(id, data);
 
 		const preprocessedInput = preprocessInputOneHot(inputSymptoms, allSymptoms);
 		const predictions = await classificationOneHot(modelB, preprocessedInput);
@@ -82,10 +83,12 @@ const oneHotPredict = async (req, res) => {
 		data.results = finalPredictions;
 		data.result = finalPredictions[0].label;
 
+		await storeModel(id, data);
+
 		const response = {
-			id: id,
+			id,
 			results: finalPredictions,
-			createdAt: createdAt,
+			createdAt,
 		};
 
 		res.status(200).json({
@@ -102,25 +105,35 @@ const oneHotPredict = async (req, res) => {
 };
 
 const getALLPredict = async (req, res) => {
-	res.json({
-		status: 'success',
-		data: {
-			response,
-		},
-	});
+	try {
+		const snapshot = await db.collection('hasil').get();
+		const predictions = snapshot.docs.map((doc) => doc.data());
+
+		res.status(200).json({
+			status: 'success',
+			data: predictions,
+		});
+	} catch (error) {
+		res.status(400).json({
+			status: 'fail',
+			message: `Terjadi kesalahan dalam mengambil semua prediksi: ${error.message}`,
+		});
+	}
 };
 
 const getPredictByResult = async (req, res) => {
 	try {
 		const { result } = req.params;
-		const filteredResults = model.filter((entry) => entry.result === result);
+		const snapshot = await db.collection('hasil').where('result', '==', result).get();
 
-		if (filteredResults.length === 0) {
+		if (snapshot.empty) {
 			return res.status(404).json({
 				status: 'fail',
 				message: `No predictions found with result: ${result}`,
 			});
 		}
+
+		const filteredResults = snapshot.docs.map((doc) => doc.data());
 
 		const enrichedResults = filteredResults
 			.map(({ createdAt }) => {
