@@ -1,23 +1,31 @@
-const article = require('../data/article');
-let currentId = article.length > 0 ? Math.max(...article.map((a) => a.id)) : 0;
+const { storeArticle, db } = require('../services/database/storeArticle');
+
+const getCurrentId = async () => {
+	const articlesSnapshot = await db.collection('article').orderBy('id', 'desc').limit(1).get();
+	if (articlesSnapshot.empty) {
+		return 0;
+	}
+	const article = articlesSnapshot.docs[0].data();
+	return article.id;
+};
 
 const addArticle = async (req, res) => {
-	const { title, image, content } = req.body;
-	const id = ++currentId;
-	const createdAt = new Date().toISOString();
+	try {
+		const { title, image, content } = req.body;
+		let currentId = await getCurrentId();
+		const id = ++currentId;
+		const createdAt = new Date().toISOString();
 
-	const newArticle = {
-		id,
-		title,
-		image,
-		content,
-		createdAt,
-	};
+		const newArticle = {
+			id,
+			title,
+			image,
+			content,
+			createdAt,
+		};
 
-	article.push(newArticle);
+		await storeArticle(String(id), newArticle);
 
-	const isSuccess = article.some((articles) => articles.id === id);
-	if (isSuccess) {
 		res.status(200).json({
 			status: 'success',
 			message: 'Article Berhasil Ditambah',
@@ -25,55 +33,84 @@ const addArticle = async (req, res) => {
 				id: id,
 			},
 		});
-	} else {
-		res.status(404).json({
+	} catch (error) {
+		console.error('Error adding article:', error);
+		res.status(500).json({
 			status: 'fail',
-			message: 'User registration failed',
+			message: 'Article gagal ditambahkan',
 		});
 	}
 };
 
-const articleHandler = (req, res) => {
-	res.status(200).json({
-		status: 'success',
-		data: article,
-	});
+const articleHandler = async (req, res) => {
+	try {
+		const articlesSnapshot = await db.collection('article').get();
+		const articles = articlesSnapshot.docs.map((doc) => doc.data());
+
+		res.status(200).json({
+			status: 'success',
+			data: articles,
+		});
+	} catch (error) {
+		console.error('Error fetching articles:', error);
+		res.status(500).json({
+			status: 'fail',
+			message: 'Gagal mengambil artikel',
+		});
+	}
 };
 
-const articleHandlerbyid = (req, res) => {
-	const { id } = req.params;
-	const articleById = article.find((n) => n.id == id);
+const articleHandlerbyid = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const articleDoc = await db.collection('article').doc(id).get();
 
-	if (articleById) {
-		res.json({
-			status: 'success',
-			data: {
-				article: articleById,
-			},
-		});
-	} else {
-		res.status(404).json({
+		if (!articleDoc.exists) {
+			res.status(404).json({
+				status: 'fail',
+				message: 'Article Tidak ditemukan',
+			});
+		} else {
+			res.status(200).json({
+				status: 'success',
+				data: {
+					article: articleDoc.data(),
+				},
+			});
+		}
+	} catch (error) {
+		console.error('Error fetching article by ID:', error);
+		res.status(500).json({
 			status: 'fail',
-			message: 'Article Tidak ditemukan',
+			message: 'Gagal mengambil artikel',
 		});
 	}
 };
 
 const deleteArticle = async (req, res) => {
-	const { id } = req.params;
-	const index = article.findIndex((a) => a.id == id);
+	try {
+		const { id } = req.params;
+		const articleDoc = await db.collection('article').doc(id).get();
 
-	if (index !== -1) {
-		article.splice(index, 1);
-		res.status(200).json({
-			status: 'success',
-			message: 'Article Berhasil Dihapus',
-		});
-	} else {
-		res.status(404).json({
+		if (!articleDoc.exists) {
+			res.status(404).json({
+				status: 'fail',
+				message: 'Article Tidak ditemukan',
+			});
+		} else {
+			await db.collection('article').doc(id).delete();
+			res.status(200).json({
+				status: 'success',
+				message: 'Article Berhasil Dihapus',
+			});
+		}
+	} catch (error) {
+		console.error('Error deleting article:', error);
+		res.status(500).json({
 			status: 'fail',
-			message: 'Article Tidak ditemukan',
+			message: 'Gagal menghapus artikel',
 		});
 	}
 };
+
 module.exports = { addArticle, articleHandler, articleHandlerbyid, deleteArticle };

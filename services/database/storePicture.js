@@ -6,7 +6,6 @@ const storage = new Storage({
 });
 
 const bucketName = 'medix-bucket';
-
 const bucket = storage.bucket(bucketName);
 
 const uploadImage = async (buffer, destination) => {
@@ -36,7 +35,6 @@ const uploadImage = async (buffer, destination) => {
 		throw error;
 	}
 };
-  
 
 const getPublicUrl = (fileName) => {
 	return `https://storage.googleapis.com/${bucketName}/${fileName}`;

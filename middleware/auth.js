@@ -1,6 +1,5 @@
-const { usersCollection } = require('../services/storeUser');
+const { usersCollection } = require('../services/database/storeUser');
 
-// middlewares/authMiddleware.js
 const isAuthenticated = async (req, res, next) => {
 	try {
 		if (!req.session || !req.session.userId) {

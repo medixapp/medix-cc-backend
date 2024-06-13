@@ -1,7 +1,6 @@
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
-
-const { storeData, db } = require('../services/storeUser');
+const { storeData, db } = require('../services/database/storeUser');
 
 // Register Area
 const register = async (req, res) => {
