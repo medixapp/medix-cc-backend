@@ -9,21 +9,34 @@ const bucketName = 'medix-bucket';
 
 const bucket = storage.bucket(bucketName);
 
-const uploadImage = async (filePath, destination) => {
+const uploadImage = async (buffer, destination) => {
 	try {
-		await bucket.upload(filePath, {
-			destination,
-			public: true, // Make the file public if needed
+		const file = bucket.file(destination);
+
+		const stream = file.createWriteStream({
 			metadata: {
-				cacheControl: 'public, max-age=31536000',
+				contentType: 'image/jpeg', // or the appropriate content type
 			},
+			public: true, // Make the file public if needed
+			resumable: false,
 		});
-		console.log(`File uploaded to ${destination}`);
+
+		stream.on('error', (err) => {
+			console.error('Error uploading file:', err);
+			throw err;
+		});
+
+		stream.on('finish', () => {
+			console.log(`File uploaded to ${destination}`);
+		});
+
+		stream.end(buffer);
 	} catch (error) {
 		console.error('Error uploading file:', error);
 		throw error;
 	}
 };
+  
 
 const getPublicUrl = (fileName) => {
 	return `https://storage.googleapis.com/${bucketName}/profilePic/${fileName}`;
