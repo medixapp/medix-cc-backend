@@ -1,5 +1,4 @@
 const { nanoid } = require('nanoid');
-const users = require('../data/users');
 const multer = require('multer');
 const path = require('path');
 const { usersCollection } = require('../services/storeUser');
@@ -14,7 +13,7 @@ const storage = multer.diskStorage({
 		cb(null, `${nanoid(16)}${path.extname(file.originalname)}`);
 	},
 });
-  
+
 const upload = multer({ storage });
 
 // Get profile
@@ -61,8 +60,8 @@ const updateProfile = async (req, res) => {
 		}
 
 		await usersCollection.doc(userId).update({
-		description: description || userDoc.data().description,
-		profileImage: profileImage,
+			description: description || userDoc.data().description,
+			profileImage: profileImage,
 		});
 
 		const updatedUserDoc = await usersCollection.doc(userId).get();
