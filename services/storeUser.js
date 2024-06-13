@@ -10,4 +10,6 @@ async function storeData(id, addUser) {
 	return predictCollection.doc(id).set(addUser);
 }
 
-module.exports = { storeData, db };
+const usersCollection = db.collection('users');
+
+module.exports = { storeData, db, usersCollection };
