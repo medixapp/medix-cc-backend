@@ -1,6 +1,6 @@
 const tf = require('@tensorflow/tfjs-node');
 const { classesA, classesB } = require('../data/classes');
-const words = require('../data/word');
+const words = require('../data/allSymptoms');
 
 async function classificationEmbedding(modelA, preprocessInputEmbedding) {
 	const inputTensor = tf.tensor([preprocessInputEmbedding], [1, 88]);

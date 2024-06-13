@@ -5,7 +5,7 @@ const {
 	preprocessInputEmbedding,
 	preprocessInputOneHot,
 } = require('../services/classification');
-const allSymptoms = require('../data/allSymptoms');
+const { allSymptoms } = require('../data/allSymptoms');
 const diseaseInfo = require('../data/medicineInfo');
 const model = require('../data/model');
 
