@@ -49,7 +49,7 @@ const updateProfile = async (req, res) => {
 		let profileImage = userDoc.data().profileImage;
 
 		if (req.file) {
-			const gcsFileName = `${nanoid(16)}${path.extname(req.file.originalname)}`;
+			const gcsFileName = `userProfilepict/${nanoid(16)}${path.extname(req.file.originalname)}`;
 			const filePath = req.file.path;
 
 			// Upload the image to Google Cloud Storage

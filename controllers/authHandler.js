@@ -70,7 +70,13 @@ const login = async (req, res) => {
 		}
 
 		req.session.userId = user.id;
-		res.status(200).json({ status: 'success', message: 'Logged in successfully' });
+		res.status(200).json({
+			status: 'success',
+			message: 'Logged in successfully',
+			session: {
+				userId: req.session.userId,
+			},
+		});
 	} catch (err) {
 		res.status(500).json({ status: 'fail', message: 'Server error', error: err.message });
 	}
