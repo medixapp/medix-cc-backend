@@ -26,7 +26,7 @@ const uploadImage = async (filePath, destination) => {
 };
 
 const getPublicUrl = (fileName) => {
-	return `https://storage.googleapis.com/${bucketName}/profilePic/${fileName}`;
+	return `https://storage.googleapis.com/${bucketName}/${fileName}`;
 };
 
 module.exports = { uploadImage, getPublicUrl };
