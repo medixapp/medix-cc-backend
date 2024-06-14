@@ -302,3 +302,5 @@ const diseaseInfo = {
 		},
 	],
 };
+
+module.exports = diseaseInfo;

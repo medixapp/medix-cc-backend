@@ -5,9 +5,9 @@ const {
 	preprocessInputEmbedding,
 	preprocessInputOneHot,
 } = require('../services/classification');
-const { allSymptoms } = require('../data/allSymptoms');
-const diseaseInfo = require('../data/medicineInfo');
+const { symptomsArray } = require('../data/allSymptoms');
 const { storeModel, db } = require('../services/database/storeModel');
+const diseaseInfo = require('../data/medicineInfo');
 
 const embeddingPredict = async (req, res) => {
 	try {
@@ -16,38 +16,28 @@ const embeddingPredict = async (req, res) => {
 		const id = nanoid();
 		const createdAt = new Date().toISOString();
 
-		const data = {
-			id,
-			results: [],
-			createdAt,
-		};
-		await storeModel(id, data);
-
 		const preprocessedInput = preprocessInputEmbedding(text);
 		const predictions = await classificationEmbedding(modelA, preprocessedInput);
-
 		const sortedPredictions = predictions.slice().sort((a, b) => b.confidence - a.confidence);
-		const finalPredictions = sortedPredictions.slice(0, 3).map(({ label, desc, penyebab }) => ({
+		const finalPredictions = sortedPredictions.slice(0, 3).map(({ label, confidence, desc, penyebab }) => ({
 			label,
 			desc,
+			confidence: confidence,
 			penyebab,
 		}));
 
-		data.results = finalPredictions;
-		data.result = finalPredictions[0].label;
-
-		await storeModel(id, data);
-
-		const response = {
+		const data = {
 			id,
 			results: finalPredictions,
+			labels: finalPredictions.map(({ label }) => label),
 			createdAt,
 		};
+		await storeModel(id, data);
 
 		res.status(200).json({
 			status: 'success',
 			message: 'Model Berhasil diprediksi',
-			data: response,
+			data: finalPredictions,
 		});
 	} catch (error) {
 		res.status(400).json({
@@ -64,37 +54,28 @@ const oneHotPredict = async (req, res) => {
 		const id = nanoid();
 		const createdAt = new Date().toISOString();
 
-		const data = {
-			id,
-			results: [],
-			createdAt,
-		};
-		await storeModel(id, data);
-
-		const preprocessedInput = preprocessInputOneHot(inputSymptoms, allSymptoms);
+		const preprocessedInput = preprocessInputOneHot(inputSymptoms, symptomsArray);
 		const predictions = await classificationOneHot(modelB, preprocessedInput);
 		const sortedPredictions = predictions.slice().sort((a, b) => b.confidence - a.confidence);
-		const finalPredictions = sortedPredictions.slice(0, 3).map(({ label, desc, penyebab }) => ({
+		const finalPredictions = sortedPredictions.slice(0, 3).map(({ label, confidence, desc, penyebab }) => ({
 			label,
 			desc,
+			confidence: confidence,
 			penyebab,
 		}));
 
-		data.results = finalPredictions;
-		data.result = finalPredictions[0].label;
-
-		await storeModel(id, data);
-
-		const response = {
+		const data = {
 			id,
 			results: finalPredictions,
+			labels: finalPredictions.map(({ label }) => label),
 			createdAt,
 		};
+		await storeModel(id, data);
 
 		res.status(200).json({
 			status: 'success',
 			message: 'Model Berhasil diprediksi',
-			data: response,
+			data: finalPredictions,
 		});
 	} catch (error) {
 		res.status(400).json({
@@ -121,34 +102,32 @@ const getALLPredict = async (req, res) => {
 	}
 };
 
-const getPredictByResult = async (req, res) => {
+const getPredictByLabel = async (req, res) => {
 	try {
-		const { result } = req.params;
-		const snapshot = await db.collection('hasil').where('result', '==', result).get();
-
+		const { label } = req.params;
+		const snapshot = await db.collection('hasil').where('labels', 'array-contains', label).get();
 		if (snapshot.empty) {
 			return res.status(404).json({
 				status: 'fail',
-				message: `No predictions found with result: ${result}`,
+				message: 'Tidak ada prediksi yang ditemukan dengan label tersebut',
 			});
 		}
 
-		const filteredResults = snapshot.docs.map((doc) => doc.data());
-
-		const enrichedResults = filteredResults
-			.map(({ createdAt }) => {
-				const diseaseEntries = diseaseInfo[result] || [];
-				return diseaseEntries.map((diseaseEntry) => ({
-					medicine: diseaseEntry.medicine,
-					description: diseaseEntry.description,
-					createdAt,
-				}));
-			})
-			.flat();
+		const predictions = snapshot.docs.map((doc) => doc.data());
+		const info = diseaseInfo[label];
+		if (!info) {
+			return res.status(200).json({
+				status: 'success',
+				data: predictions,
+				message: 'Informasi penyakit tidak ditemukan untuk label tersebut',
+			});
+		}
 
 		res.status(200).json({
 			status: 'success',
-			medicines: enrichedResults,
+			data: {
+				info,
+			},
 		});
 	} catch (error) {
 		res.status(400).json({
@@ -158,4 +137,4 @@ const getPredictByResult = async (req, res) => {
 	}
 };
 
-module.exports = { embeddingPredict, oneHotPredict, getALLPredict, getPredictByResult };
+module.exports = { embeddingPredict, oneHotPredict, getALLPredict, getPredictByLabel };

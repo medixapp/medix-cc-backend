@@ -27,7 +27,7 @@ const classesB = {
 	8: 'Irritable Bowel Syndrome (IBS)',
 	9: 'Konstipasi',
 	10: 'Maag',
-	11: 'Tifus',
+	11: 'Tipes',
 	12: 'Tukak lambung',
 	13: 'Usus Buntu',
 };
