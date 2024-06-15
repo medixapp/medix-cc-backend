@@ -14,7 +14,7 @@ const startServer = async () => {
 	app.use(express.urlencoded({ extended: true }));
 	app.use(
 		session({
-			secret: 'your_secret_key', // Replace with a strong secret
+			secret: process.env.SESSION_SECRET,
 			resave: false,
 			saveUninitialized: true,
 			cookie: { secure: false }, // Set to true if using HTTPS
