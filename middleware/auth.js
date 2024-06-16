@@ -2,7 +2,7 @@ const { usersCollection } = require('../services/database/storeUser');
 
 const isAuthenticated = async (req, res, next) => {
 	try {
-		if (!req.session || !req.session.userId) {
+		if (!req.session?.userId) {
 			return res.status(401).json({ status: 'fail', message: 'Unauthorized' });
 		}
 
