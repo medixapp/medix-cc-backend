@@ -206,6 +206,23 @@ const diseaseInfo = {
 				'Antibiotik ini bekerja dengan cara menghentikan pertumbuhan bakteri penyebab tipes. Obat ini hanya dapat dibeli dengan resep dokter.',
 		},
 	],
+	Celiac: [
+		{
+			medicine: 'Diet bebas gluten',
+			description:
+				'Cara utama dalam mengatasi penyakit celiac adalah dengan menghindari makanan atau bahan apa pun yang mengandung gluten. Selain pada makanan, gluten juga terdapat pada obat-obatan, vitamin, bahkan lipstik. Cara ini harus dilakukan seumur hidup guna mencegah terjadinya komplikasi.',
+		},
+		{
+			medicine: 'Betamethasone Valerate',
+			description:
+				'Betamethasone valerate tergolong obat golongan kortikosteroid. Obat ini bekerja menghambat pelepasan zat-zat kimia yang memicu munculnya reaksi peradangan.',
+		},
+		{
+			medicine: 'Suplemen vitamin dan mineral',
+			description:
+				'Jika pasien dinilai mengalami anemia dan malnutrisi yang cukup berat, atau jika pola makan pasien belum bisa menjamin kecukupan gizinya, dokter akan memberikan suplemen agar pasien mendapatkan semua nutrisi yang dibutuhkan oleh tubuh.',
+		},
+	],
 	Disetnri: [
 		{
 			medicine: 'Paracetamol',
