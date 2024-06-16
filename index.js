@@ -28,6 +28,10 @@ const startServer = async () => {
 		const modelB = await loadModelOnehot();
 		app.modelB = modelB;
 
+		app.get('/', (req, res) => {
+			res.send('Hai ini API Untuk Medix-App');
+		});
+
 		app.use('/', auth);
 		app.use('/', predict);
 		app.use('/', article);
