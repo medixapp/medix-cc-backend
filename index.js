@@ -2,9 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const auth = require('./routes/auth');
-// const predict = require('./routes/predict');
+const predict = require('./routes/predict');
 const article = require('./routes/article');
-// const { loadModelEmbedding, loadModelOnehot } = require('./services/loadmodel');
+const { loadModelEmbedding, loadModelOnehot } = require('./services/loadmodel');
 
 const startServer = async () => {
 	const port = 3000;
@@ -12,17 +12,17 @@ const startServer = async () => {
 	app.use(express.urlencoded({ extended: true }));
 
 	try {
-		// const modelA = await loadModelEmbedding();
-		// app.modelA = modelA;
-		// const modelB = await loadModelOnehot();
-		// app.modelB = modelB;
+		const modelA = await loadModelEmbedding();
+		app.modelA = modelA;
+		const modelB = await loadModelOnehot();
+		app.modelB = modelB;
 
 		app.get('/', (req, res) => {
 			res.send('Hai ini API Untuk Medix-App JWT TOKEN');
 		});
 
 		app.use('/', auth);
-		// app.use('/', predict);
+		app.use('/', predict);
 		app.use('/', article);
 
 		app.listen(port, () => {
