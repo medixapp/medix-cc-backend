@@ -1,11 +1,15 @@
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const { storeData, db } = require('../services/database/storeUser');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register Area
 const register = async (req, res) => {
 	try {
 		const { username, email, password } = req.body;
+		
 		// Check if email already exists
 		const usersRef = db.collection('users');
 		const querySnapshot = await usersRef.where('email', '==', email).get();
@@ -68,12 +72,15 @@ const login = async (req, res) => {
 			return res.status(400).json({ status: 'fail', message: 'Invalid credentials' });
 		}
 
-		req.session.userId = user.id;
+		const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '720h' });
+
 		res.status(200).json({
 			status: 'success',
 			message: 'Logged in successfully',
-			session: {
-				userId: req.session.userId,
+			loginResult: {
+				userId: user.id,
+				name: user.username,
+				token: token,
 			},
 		});
 	} catch (err) {

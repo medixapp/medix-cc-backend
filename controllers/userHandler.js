@@ -11,7 +11,7 @@ const upload = multer({ storage });
 // Get profile
 const getProfile = async (req, res) => {
 	try {
-		const userId = req.session.userId;
+		const userId = req.user.id; // Retrieved from the JWT middleware
 		const userDoc = await usersCollection.doc(userId).get();
 
 		if (!userDoc.exists) {
@@ -30,7 +30,7 @@ const getProfile = async (req, res) => {
 // Updating description for profile page and profile picture image
 const updateProfile = async (req, res) => {
 	try {
-		const userId = req.user.id; // Retrieved from the middleware
+		const userId = req.user.id; // Retrieved from the JWT middleware
 		const { description } = req.body;
 		let profileImage = req.user.profileImage;
 
