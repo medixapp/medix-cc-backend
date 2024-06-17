@@ -29,7 +29,7 @@ const startServer = async () => {
 		app.modelB = modelB;
 
 		app.get('/', (req, res) => {
-			res.send('Hai ini API Untuk Medix-App');
+			res.send('Hai ini API Untuk Medix-App JWT TOKEN');
 		});
 
 		app.use('/', auth);
