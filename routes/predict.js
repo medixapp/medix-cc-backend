@@ -5,7 +5,6 @@ const { embeddingPredict, oneHotPredict, getALLPredict, getPredictByLabel } = re
 
 const upload = multer();
 
-// Model Testing
 predict.post('/predict/embedding', upload.none(), embeddingPredict);
 predict.post('/predict/onehot', upload.none(), oneHotPredict);
 predict.get('/predict', getALLPredict);

@@ -15,7 +15,6 @@ const embeddingPredict = async (req, res) => {
 		const { modelA } = req.app;
 		const id = nanoid();
 		const createdAt = new Date().toISOString();
-
 		const preprocessedInput = preprocessInputEmbedding(text);
 		const predictions = await classificationEmbedding(modelA, preprocessedInput);
 		const sortedPredictions = predictions.slice().sort((a, b) => b.confidence - a.confidence);
@@ -53,7 +52,6 @@ const oneHotPredict = async (req, res) => {
 		const { modelB } = req.app;
 		const id = nanoid();
 		const createdAt = new Date().toISOString();
-
 		const preprocessedInput = preprocessInputOneHot(inputSymptoms, symptomsArray);
 		const predictions = await classificationOneHot(modelB, preprocessedInput);
 		const sortedPredictions = predictions.slice().sort((a, b) => b.confidence - a.confidence);

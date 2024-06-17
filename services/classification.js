@@ -185,25 +185,21 @@ async function classificationOneHot(modelB, preprocessInputOneHot) {
 function preprocessInputEmbedding(text) {
 	if (typeof text !== 'string') {
 		console.error('Invalid input: text should be a string');
-		return Array(88).fill(0); // Return an array of 20 zeros if input is invalid
+		return Array(88).fill(0);
 	}
 
-	// Remove commas and periods
 	let string = text.replace(/,/g, '').replace(/\./g, '');
-	// Split the string into an array of words
 	let strArr = string.split(' ');
 	let strConverted = [];
 
-	// Convert words to integers based on the dictionary
 	for (let w of strArr) {
 		if (symptomsWords[w] === undefined) {
-			strConverted.push(1); // Use 1 for unknown words
+			strConverted.push(1);
 		} else {
 			strConverted.push(symptomsWords[w]);
 		}
 	}
 
-	// Ensure the array has a length of 20 by padding with zeros or truncating
 	if (strConverted.length < 88) {
 		let numOfZero = 88 - strConverted.length;
 		for (let i = 0; i < numOfZero; i++) {
@@ -216,11 +212,9 @@ function preprocessInputEmbedding(text) {
 }
 
 function preprocessInputOneHot(inputSymptoms, symptomsArray) {
-	// Normalize symptoms to lower case
 	const inputArray = new Array(inputSymptoms.map((symptom) => symptom.toLowerCase()))[0];
 	const normalizedAllSymptoms = symptomsArray.map((symptom) => symptom.toLowerCase());
 
-	// Initialize an array with zeros, one for each symptom in allSymptoms
 	const binaryVector = Array(normalizedAllSymptoms.length).fill(0);
 	for (const [index, symptom] of normalizedAllSymptoms.entries()) {
 		if (inputArray.includes(symptom)) {

@@ -4,14 +4,12 @@ const path = require('path');
 const { usersCollection } = require('../services/database/storeUser');
 const { uploadImage, getPublicUrl } = require('../services/database/storePicture');
 
-// Configure multer for file uploads (store them in memory)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Get profile
 const getProfile = async (req, res) => {
 	try {
-		const userId = req.user.id; // Retrieved from the JWT middleware
+		const userId = req.user.id;
 		const userDoc = await usersCollection.doc(userId).get();
 
 		if (!userDoc.exists) {
@@ -27,20 +25,15 @@ const getProfile = async (req, res) => {
 	}
 };
 
-// Updating description for profile page and profile picture image
 const updateProfile = async (req, res) => {
 	try {
-		const userId = req.user.id; // Retrieved from the JWT middleware
+		const userId = req.user.id;
 		const { description } = req.body;
 		let profileImage = req.user.profileImage;
 
 		if (req.file) {
 			const gcsFileName = `userProfilepict/${nanoid(16)}${path.extname(req.file.originalname)}`;
-
-			// Upload the image to Google Cloud Storage
 			await uploadImage(req.file.buffer, gcsFileName);
-
-			// Get the public URL for the uploaded image
 			profileImage = getPublicUrl(gcsFileName);
 		}
 

@@ -7,7 +7,7 @@ const article = require('./routes/article');
 const { loadModelEmbedding, loadModelOnehot } = require('./services/loadmodel');
 
 const startServer = async () => {
-	const port = 3000;
+	const port = process.env.PORT;
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
 
@@ -18,7 +18,7 @@ const startServer = async () => {
 		app.modelB = modelB;
 
 		app.get('/', (req, res) => {
-			res.send('Hai ini API Untuk Medix-App JWT TOKEN');
+			res.send('Hai ini API Untuk Medix-App');
 		});
 
 		app.use('/', auth);
