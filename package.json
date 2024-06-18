@@ -1,26 +1,26 @@
 {
-	"name": "backend-medix",
-	"version": "1.0.0",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node index.js",
-		"dev": "nodemon index.js"
-	},
-	"author": "Muhammad Ridho & Arifin Ilham M.",
-	"license": "ISC",
-	"description": "Backend Area for Medix App",
-	"dependencies": {
-		"@google-cloud/firestore": "^7.8.0",
-		"@google-cloud/storage": "^7.11.2",
-		"@tensorflow/tfjs-node": "^4.20.0",
-		"bcrypt": "^5.1.1",
-		"connect-flash": "^0.1.1",
-		"dotenv": "^16.4.5",
-		"express": "^4.19.2",
-		"express-session": "^1.18.0",
-		"jsonwebtoken": "^9.0.2",
-		"multer": "^1.4.5-lts.1",
-		"nanoid": "^3.3.7",
-		"nodemon": "^3.1.2"
-	}
+  "name": "backend-medix",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Muhammad Ridho & Arifin Ilham M.",
+  "license": "ISC",
+  "description": "Backend Area for Medix App",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.8.0",
+    "@google-cloud/storage": "^7.11.2",
+    "@tensorflow/tfjs-node": "^4.20.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nanoid": "^3.3.7",
+    "nodemon": "^3.1.2"
+  },
+  "main": "index.js",
+  "keywords": []
 }

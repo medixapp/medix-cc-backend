@@ -1,9 +1,13 @@
 FROM node:18.19
 
-WORKDIR /backend-medix
+WORKDIR /api-nodejs
 
-COPY package*.json .
+COPY package*.json /api-nodejs/
+
 RUN npm install
-COPY . .
+
+EXPOSE 3001
+
+COPY . /api-nodejs/
 
 CMD [ "npm","run","start" ]

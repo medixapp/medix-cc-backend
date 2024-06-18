@@ -28,8 +28,8 @@ const register = async (req, res) => {
 			description: '',
 			profileImage: '',
 		};
-		
 		await storeData(id, addUser);
+
 		res.status(200).json({
 			status: 'success',
 			message: 'User registered successfully',
@@ -50,7 +50,6 @@ const login = async (req, res) => {
 		const { email, password } = req.body;
 		const usersRef = db.collection('users');
 		const querySnapshot = await usersRef.where('email', '==', email).get();
-
 		if (querySnapshot.empty) {
 			req.flash('error', 'User does not exist');
 			return res.status(400).json({ status: 'fail', message: 'User does not exist' });
@@ -65,6 +64,7 @@ const login = async (req, res) => {
 		}
 
 		const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '720h' });
+
 		res.status(200).json({
 			status: 'success',
 			message: 'Logged in successfully',
@@ -88,5 +88,4 @@ const logout = (req, res) => {
 	});
 };
 
-
-module.exports = { register, login, logout};
+module.exports = { register, login, logout };
