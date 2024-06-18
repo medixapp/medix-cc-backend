@@ -1,7 +1,7 @@
 const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore({
-	projectId: 'testing-medix',
+	projectId: 'medix-backend-production',
 	databaseId: 'userdb',
 });
 

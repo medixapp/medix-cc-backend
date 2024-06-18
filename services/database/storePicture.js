@@ -1,11 +1,11 @@
 const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
-	projectId: 'testing-medix',
+	projectId: 'medix-backend-production',
 	keyFilename: './serviceAccountKey.json',
 });
 
-const bucketName = 'medix-bucket';
+const bucketName = 'medix-storage';
 const bucket = storage.bucket(bucketName);
 
 const uploadImage = async (buffer, destination) => {
