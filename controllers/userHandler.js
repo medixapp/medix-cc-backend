@@ -11,7 +11,6 @@ const getProfile = async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const userDoc = await usersCollection.doc(userId).get();
-
 		if (!userDoc.exists) {
 			return res.status(404).json({ status: 'fail', message: 'User not found' });
 		}
@@ -29,8 +28,8 @@ const updateProfile = async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const { description } = req.body;
-		let profileImage = req.user.profileImage;
 
+		let profileImage = req.user.profileImage;
 		if (req.file) {
 			const gcsFileName = `userProfilepict/${nanoid(16)}${path.extname(req.file.originalname)}`;
 			await uploadImage(req.file.buffer, gcsFileName);

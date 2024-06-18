@@ -5,6 +5,7 @@ const getCurrentId = async () => {
 	if (articlesSnapshot.empty) {
 		return 0;
 	}
+
 	const article = articlesSnapshot.docs[0].data();
 	return article.id;
 };
@@ -23,7 +24,6 @@ const addArticle = async (req, res) => {
 			content,
 			createdAt,
 		};
-
 		await storeArticle(String(id), newArticle);
 
 		res.status(200).json({
@@ -42,7 +42,7 @@ const addArticle = async (req, res) => {
 	}
 };
 
-const articleHandler = async (req, res) => {
+const getArticle = async (req, res) => {
 	try {
 		const articlesSnapshot = await db.collection('article').get();
 		const articles = articlesSnapshot.docs.map((doc) => doc.data());
@@ -60,11 +60,10 @@ const articleHandler = async (req, res) => {
 	}
 };
 
-const articleHandlerbyid = async (req, res) => {
+const getArticlebyid = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const articleDoc = await db.collection('article').doc(id).get();
-
 		if (!articleDoc.exists) {
 			res.status(404).json({
 				status: 'fail',
@@ -91,7 +90,6 @@ const deleteArticle = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const articleDoc = await db.collection('article').doc(id).get();
-
 		if (!articleDoc.exists) {
 			res.status(404).json({
 				status: 'fail',
@@ -113,4 +111,4 @@ const deleteArticle = async (req, res) => {
 	}
 };
 
-module.exports = { addArticle, articleHandler, articleHandlerbyid, deleteArticle };
+module.exports = { addArticle, getArticle, getArticlebyid, deleteArticle };

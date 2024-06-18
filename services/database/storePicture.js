@@ -1,11 +1,11 @@
 const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
-	projectId: 'testing-medix',
-	keyFilename: './serviceAccountKey.json',
+	projectId: process.env.PROJECT_ID,
+	keyFilename: process.env.UNKNOWN,
 });
 
-const bucketName = 'medix-bucket';
+const bucketName = 'medix-storage';
 const bucket = storage.bucket(bucketName);
 
 const uploadImage = async (buffer, destination) => {
@@ -14,9 +14,9 @@ const uploadImage = async (buffer, destination) => {
 
 		const stream = file.createWriteStream({
 			metadata: {
-				contentType: 'image/jpeg', // or the appropriate content type
+				contentType: 'image/jpeg',
 			},
-			public: true, // Make the file public if needed
+			public: false,
 			resumable: false,
 		});
 
