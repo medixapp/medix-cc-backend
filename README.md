@@ -391,7 +391,7 @@ None
 # API Access Links
 
  - [API Server1](https://server1-fdbe4vnhta-et.a.run.app)
- - [API Server2](https://github.com/matiassingers/awesome-readme)
+ - [API Server2](https://server2-fdbe4vnhta-et.a.run.app)
 
 
 # Authors
