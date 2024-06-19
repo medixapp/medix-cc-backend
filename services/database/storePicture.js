@@ -16,7 +16,7 @@ const uploadImage = async (buffer, destination) => {
 			metadata: {
 				contentType: 'image/jpeg',
 			},
-			public: false,
+			public: true,
 			resumable: false,
 		});
 
