@@ -388,11 +388,11 @@ None
 
 [Documentation](https://docs.google.com/document/d/1W3uL6RJ0QGhFOR1FZxv2F5wMbtAi_iMV1TbxRax3M-k/)
 
-# Tech Stack
+# API Access Links
 
-**Server 1:** Node.js, Express, Bcrypt, Tensorflow tfjs, Google-cloud firestore, Google-cloud storage
+ - [API Server1](https://server1-fdbe4vnhta-et.a.run.app)
+ - [API Server2](https://github.com/matiassingers/awesome-readme)
 
-**Server 2:** Flask, Numpy, Transformers, Tensorflow
 
 # Authors
 
