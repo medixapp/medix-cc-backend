@@ -2,7 +2,7 @@ const { Firestore } = require('@google-cloud/firestore');
 
 const db = new Firestore({
 	projectId: process.env.PROJECT_ID,
-	databaseId: 'modeldb',
+	databaseId: 'medixdb',
 	keyFilename: process.env.FIRESTORE,
 });
 
