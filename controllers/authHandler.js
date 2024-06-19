@@ -80,12 +80,7 @@ const login = async (req, res) => {
 };
 
 const logout = (req, res) => {
-	req.session.destroy((err) => {
-		if (err) {
-			return res.status(500).json({ status: 'fail', message: 'Logout failed' });
-		}
-		res.status(200).json({ status: 'success', message: 'Logged out successfully' });
-	});
+	res.status(200).json({ status: 'success', message: 'Logged out successfully' });
 };
 
 
