@@ -2,7 +2,7 @@ const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
 	projectId: process.env.PROJECT_ID,
-	keyFilename: process.env.UNKNOWN,
+	keyFilename: process.env.STORAGE,
 });
 
 const bucketName = 'medix-storage';

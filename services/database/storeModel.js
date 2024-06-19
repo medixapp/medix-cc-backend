@@ -3,6 +3,7 @@ const { Firestore } = require('@google-cloud/firestore');
 const db = new Firestore({
 	projectId: process.env.PROJECT_ID,
 	databaseId: 'modeldb',
+	keyFilename: process.env.FIRESTORE,
 });
 
 async function storeModel(id, data) {
