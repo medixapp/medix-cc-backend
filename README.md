@@ -8,7 +8,7 @@ Api development for Medix on Node.js
 
 # Google Cloud Architecture
 
-![GC](https://github.com/medixapp/medix-cc-backend/blob/main/gc_architecture.png)
+![GC]()
 
 # Running This Project
 
